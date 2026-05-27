@@ -1115,13 +1115,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { document.getElementById('lbxOverlay').classList.remove('active'); document.body.style.overflow = ''; }
 });
 
-/* QR CODE — generated from current page URL using free API, with Lamar logo center overlay */
+/* QR CODE — static branded QR image */
 (function() {
-  const url = window.location.href || 'https://lamar-myers.vercel.app';
-  const encoded = encodeURIComponent(url);
-  const logoUrl = encodeURIComponent('https://mlgmigguhljsiopctkkj.supabase.co/storage/v1/object/public/MY%20PORTFOLIO/LOGOS/lamar_myers_b.png');
-  // Use QR Server API — free, no key needed
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=12&color=1C1A17&bgcolor=FFFFFF&data=${encoded}`;
+  const qrSrc = 'https://mlgmigguhljsiopctkkj.supabase.co/storage/v1/object/public/MY%20PORTFOLIO/LOGOS/qr_logo_2.png';
   const img = document.getElementById('qrImg');
   if (img) img.src = qrSrc;
   // Make QR clickable to open full size
