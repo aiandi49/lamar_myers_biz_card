@@ -604,9 +604,121 @@ body::before {
   color: var(--ink-mute);
 }
 
+/* ============================================================
+   PWA INSTALL BANNER — fully rebuilt
+   ============================================================ */
+#pwa-banner {
+  position: fixed;
+  /* sits above the FAB (≈64px tall) plus safe area, with breathing room */
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9998;
+  /* constrain to screen width on any device */
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  pointer-events: auto;
+  animation: pwaSlideIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+#pwa-banner.pwa-hiding {
+  animation: pwaSlideOut 0.28s ease forwards;
+}
+@keyframes pwaSlideIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(18px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
+}
+@keyframes pwaSlideOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0);    }
+  to   { opacity: 0; transform: translateX(-50%) translateY(18px); }
+}
+.pwa-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  border: 1px solid rgba(184,150,62,0.35);
+  border-radius: 100px;
+  padding: 10px 12px 10px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.38), 0 0 0 1px rgba(184,150,62,0.12);
+  /* prevent the pill from line-wrapping on any screen */
+  white-space: nowrap;
+}
+.pwa-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.pwa-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  flex-shrink: 0;
+}
+.pwa-install-btn {
+  flex-shrink: 0;
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 7px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+  line-height: 1;
+}
+.pwa-install-btn:hover  { background: #a07830; }
+.pwa-install-btn:active { transform: scale(0.96); }
+/* Close button — big enough touch target, visually balanced */
+.pwa-close-btn {
+  flex-shrink: 0;
+  /* 36×36 touch target */
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 50%;
+  color: #c9bfa8;
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+  padding: 0;
+  /* remove any inherited button quirks */
+  -webkit-appearance: none;
+  appearance: none;
+}
+.pwa-close-btn:hover  { background: rgba(255,255,255,0.2); color: #fff; }
+.pwa-close-btn:active { transform: scale(0.9); }
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  #pwa-banner {
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    max-width: calc(100vw - 24px);
+  }
+  .pwa-text         { font-size: 0.73rem; }
+  .pwa-install-btn  { padding: 7px 13px; font-size: 0.62rem; }
+  .pwa-close-btn    { width: 34px; height: 34px; min-width: 34px; }
+}
+/* Very small phones */
+@media (max-width: 380px) {
+  .pwa-inner { padding: 9px 10px 9px 14px; gap: 8px; }
+  .pwa-text  { font-size: 0.68rem; }
+  .pwa-install-btn { padding: 6px 11px; }
+}
+
 /* PRINT STYLES */
 @media print {
-  .coverage-section, .contact-fab, #toast, .lbx-overlay { display: none !important; }
+  .coverage-section, .contact-fab, #toast, .lbx-overlay, #pwa-banner { display: none !important; }
   body { background: #fff !important; }
   body::before { display: none; }
   .page { max-width: 100%; padding: 20px; }
@@ -629,34 +741,21 @@ body::before {
 /* ── TABLET (641px – 1024px) ── */
 @media (max-width: 1024px) {
   .page { padding: 0 24px 80px; }
-
-  /* Hero */
   .hero { padding: 48px 0 40px; gap: 24px; }
   .hero-name { font-size: clamp(2.8rem, 7vw, 4.5rem); }
-
-  /* Grids → 2-col where they were 3-col or 5-col */
   .values-grid { grid-template-columns: repeat(3, 1fr); }
   .kc-grid { grid-template-columns: repeat(2, 1fr); }
   .initiative-grid { grid-template-columns: repeat(2, 1fr); }
   .comp-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-
-  /* Directory table stays scrollable */
   .dir-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-  /* Coverage logos */
   .coverage-logos-grid { gap: 20px; }
   .coverage-logo-item img { width: 88px; height: 88px; }
-
-  /* Section divider padding */
   .section-divider { padding: 20px 24px; }
 }
 
 /* ── MOBILE (≤ 640px) ── */
 @media (max-width: 640px) {
-  /* Base spacing */
   .page { padding: 0 16px 100px; }
-
-  /* ── COVERAGE HERO ── */
   .coverage-section { padding: 44px 16px 56px; text-align: center; }
   .coverage-headline { font-size: clamp(2.2rem, 11vw, 3.2rem); letter-spacing: 0.04em; }
   .coverage-sub { font-size: 0.95rem; margin-bottom: 36px; }
@@ -666,47 +765,25 @@ body::before {
   .coverage-logos-grid { gap: 14px; justify-content: center; }
   .coverage-logo-item img { width: 68px; height: 68px; border-radius: 7px; }
   .coverage-logo-name { font-size: 0.56rem; letter-spacing: 0.14em; }
-
-  /* QR section */
   .qr-wrap { width: 160px; height: 160px; }
-
-  /* ── HERO ── */
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 36px 0 32px;
-    gap: 20px;
-    text-align: center;
-  }
+  .hero { grid-template-columns: 1fr; padding: 36px 0 32px; gap: 20px; text-align: center; }
   .hero-right { display: none; }
   .hero-name { font-size: clamp(2.6rem, 12vw, 3.8rem); line-height: 0.9; }
   .hero-eyebrow { margin-bottom: 14px; }
   .hero-tagline { font-size: 0.92rem; }
   .hero-pills { justify-content: center; }
   .hero-pill { font-size: 0.72rem; padding: 5px 11px; }
-
-  /* ── SECTION LABELS & DIVIDERS ── */
   .section-label { margin: 40px 0 12px; font-size: 0.6rem; justify-content: center; }
   .section-label::after { display: none; }
-  .section-divider {
-    padding: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 48px;
-    justify-content: center;
-    text-align: center;
-  }
+  .section-divider { padding: 16px; flex-wrap: wrap; gap: 10px; margin-top: 48px; justify-content: center; text-align: center; }
   .section-divider-title { font-size: 1.3rem; width: 100%; text-align: center; }
   .section-divider-label { width: 100%; text-align: center; }
   .section-divider-sep { display: none; }
   .section-divider-line { display: none; }
-
-  /* ── CARDS ── */
   .card-header { padding: 12px 16px 11px; gap: 8px; justify-content: center; }
   .card-filename { font-size: 0.66rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
   .card-body { padding: 16px; text-align: center; }
   .card-subtitle { text-align: center; }
-
-  /* ── GRIDS → single column, centered ── */
   .toc-grid { grid-template-columns: 1fr; }
   .info-grid { grid-template-columns: 1fr; }
   .contact-final-grid { grid-template-columns: 1fr; }
@@ -716,56 +793,36 @@ body::before {
   .kc-grid { grid-template-columns: 1fr; }
   .initiative-grid { grid-template-columns: 1fr; }
   .values-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-
-  /* ── TOC — left aligned ── */
   .toc-item { padding: 9px 12px; font-size: 0.75rem; justify-content: flex-start; text-align: left; }
   .toc-item.section-row { justify-content: flex-start; text-align: left; }
   .toc-item .toc-title { text-align: left; }
-
-  /* ── INFO & CONTACT ITEMS ── */
   .info-item { padding: 11px 12px; text-align: center; }
   .info-label { text-align: center; }
   .info-value { font-size: 0.8rem; justify-content: center; }
   .cf-item { text-align: center; }
   .cf-label { text-align: center; }
   .cf-value { justify-content: center; }
-
-  /* ── IDENTITY ── */
   .identity-display { font-size: clamp(2rem, 9vw, 3rem); text-align: center; }
   .identity-title { text-align: center; }
-
-  /* ── MISSION TEXT ── */
   .mission-text { text-align: center; }
-
-  /* ── EXPERIENCE ── */
   .exp-role { text-align: center; }
   .exp-org { text-align: center; }
-  .exp-bullets li { text-align: left; } /* keep left for list readability */
-
-  /* ── SKILLS ── */
+  .exp-bullets li { text-align: left; }
   .skill-row { flex-direction: column; gap: 4px; align-items: center; }
   .skill-cat-label { min-width: unset; text-align: center; }
   .skill-tags { justify-content: center; }
-
-  /* ── COMPETENCIES ── */
   .comp-grid { grid-template-columns: 1fr 1fr; }
   .comp-section-title { text-align: center; }
   .comp-item { text-align: center; }
-
-  /* ── ALPHA STATS ── */
   .alpha-stats { flex-direction: column; gap: 8px; }
   .alpha-stat { text-align: center; }
   .alpha-stat .big { font-size: 1.7rem; }
-
-  /* ── RESULTS & PRICING ── */
   .results-row { gap: 8px; justify-content: center; }
   .result-pill { min-width: 90px; padding: 12px 10px; text-align: center; }
   .result-pill .num { font-size: 1.5rem; }
   .pricing-row { gap: 8px; justify-content: center; }
   .pricing-stat { padding: 12px; text-align: center; }
   .pricing-stat .big { font-size: 1.6rem; }
-
-  /* ── PROJECT ── */
   .proj-meta-label { text-align: center; }
   .proj-tags { justify-content: center; }
   .proj-status { justify-content: center; }
@@ -773,20 +830,14 @@ body::before {
   .proj-link-url { font-size: 0.62rem; word-break: break-all; text-align: center; }
   .proj-meta-bar { justify-content: center; text-align: center; }
   .proj-desc { text-align: center; }
-
-  /* ── DIRECTORY ── */
   .dir-controls { flex-direction: column; align-items: stretch; }
   .dir-search { min-width: unset; width: 100%; }
   .dir-pills { justify-content: center; }
   .dir-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; }
   .dir-footer-note { flex-direction: column; gap: 4px; text-align: center; }
   .dir-results-panel { text-align: center; }
-
-  /* ── EDUCATION ── */
   .edu-item { flex-direction: column; gap: 6px; align-items: center; text-align: center; }
   .edu-year { text-align: center; }
-
-  /* ── VISION / VALUES / KC ── */
   .vision-text { text-align: center; }
   .kc-item { text-align: center; }
   .kc-title { text-align: center; }
@@ -794,55 +845,22 @@ body::before {
   .value-card { padding: 12px 10px; text-align: center; }
   .value-icon { font-size: 1.2rem; }
   .value-desc { font-size: 0.66rem; }
-
-  /* ── INITIATIVES ── */
   .initiative-card { text-align: center; }
   .initiative-num { text-align: center; }
   .initiative-name { text-align: center; }
   .initiative-row { justify-content: center; }
   .initiative-row .key { min-width: unset; }
-
-  /* ── GOALS ── */
   .goals-list li { font-size: 0.8rem; padding: 9px 12px; }
-
-  /* ── SUITE PLANS ── */
   .suite-plan { padding: 16px; text-align: center; }
-  .plan-features { text-align: left; } /* keep left for checklist readability */
-
-  /* ── SOCIAL — left aligned ── */
+  .plan-features { text-align: left; }
   .social-link { justify-content: flex-start; }
   .social-grid .social-row { justify-content: flex-start; }
-
-  /* ── BLOCK TEXT ── */
   .block-text { text-align: center; }
-
-  /* ── FUTURE VISION ── */
   .future-vision-block { font-size: 1rem; text-align: center; }
-
-  /* ── FEATURED RIBBON ── */
   .featured-ribbon::before { font-size: 0.55rem; padding: 3px 10px; }
-
-  /* ── FOOTER ── */
-  .site-footer {
-    flex-direction: column;
-    gap: 6px;
-    text-align: center;
-    padding: 24px 16px;
-  }
-
-  /* ── CONTACT FAB ── */
-  .contact-fab {
-    bottom: 16px;
-    right: 16px;
-    padding: 11px 18px;
-    font-size: 0.72rem;
-    gap: 8px;
-  }
-
-  /* ── TOAST ── */
+  .site-footer { flex-direction: column; gap: 6px; text-align: center; padding: 24px 16px; }
+  .contact-fab { bottom: 16px; right: 16px; padding: 11px 18px; font-size: 0.72rem; gap: 8px; }
   #toast { font-size: 0.74rem; padding: 9px 18px; bottom: 20px; max-width: 88vw; text-align: center; white-space: normal; }
-
-  /* ── LIGHTBOX ── */
   .lbx-inner img { max-width: 92vw; }
   .lbx-close { top: -38px; }
 }
@@ -865,7 +883,6 @@ body::before {
   .contact-fab { bottom: calc(16px + env(safe-area-inset-bottom)); }
   .page { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 }
-
 </style>
 </head>
 <body>
@@ -929,7 +946,7 @@ body::before {
 
 <div class="page">
 
-<!-- IDENTITY (directly after coverage) -->
+<!-- IDENTITY -->
 <div class="section-label" id="identity">Identity</div>
 <div class="card gold-top" style="margin-bottom:32px;">
   <div class="card-header">
@@ -1285,7 +1302,6 @@ body::before {
   </div>
 </div>
 
-
 <div class="section-label" id="future">Future Vision & Roadmap</div>
 <div class="card">
   <div class="card-header"><div class="card-dots"><div class="card-dot r"></div><div class="card-dot y"></div><div class="card-dot g"></div></div><div class="card-filename">future_vision_roadmap.whitepaper</div><div class="card-badge badge-cyan">ROADMAP</div></div>
@@ -1304,8 +1320,8 @@ body::before {
   <div class="footer-copy">VTREI, LLC &nbsp;·&nbsp; TUCSON, ARIZONA &nbsp;·&nbsp; © 2026</div>
 </footer>
 
+<!-- COPY SYSTEM -->
 <script>
-/* COPY SYSTEM */
 function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className=type==='success'?'show success':'show';setTimeout(()=>t.className='',2800);}
 function copyText(text,btn){
   const onSuccess=()=>{btn.textContent='✓ COPIED';btn.classList.add('copied');showToast('Copied!','success');setTimeout(()=>{btn.textContent='COPY';btn.classList.remove('copied');},2200);};
@@ -1316,7 +1332,6 @@ function fbCopy(text,btn,cb){const ta=document.createElement('textarea');ta.valu
 function makeCopyBtn(text){const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='COPY';btn.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();copyText(text,btn);});return btn;}
 
 document.addEventListener('DOMContentLoaded',()=>{
-  /* Copy buttons on info items */
   document.querySelectorAll('.info-item').forEach(item=>{
     const val=item.querySelector('.info-value');if(!val)return;
     val.appendChild(makeCopyBtn(val.innerText.replace('COPY','').trim()));
@@ -1327,6 +1342,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 </script>
+
 <!-- STICKY CONTACT BUTTON -->
 <a href="mailto:director@metaearthinitiative.org?subject=Inquiry%20from%20Digital%20Business%20Card" class="contact-fab">
   <span class="contact-fab-dot"></span>
@@ -1356,19 +1372,22 @@ function closeLightbox(e) {
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { document.getElementById('lbxOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+  if (e.key === 'Escape') {
+    document.getElementById('lbxOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
 });
 
-/* QR CODE — static branded QR image */
+/* QR CODE */
 (function() {
   const qrSrc = 'https://mlgmigguhljsiopctkkj.supabase.co/storage/v1/object/public/MY%20PORTFOLIO/LOGOS/qr_logo_2.png';
   const img = document.getElementById('qrImg');
   if (img) img.src = qrSrc;
-  // Make QR clickable to open full size
   const wrap = document.getElementById('qrWrap');
   if (wrap) wrap.onclick = () => openLightbox(qrSrc, 'Scan · Lamar Myers Digital Business Card');
 })();
 </script>
+
 <!-- PWA SERVICE WORKER REGISTRATION -->
 <script>
 if ('serviceWorker' in navigator) {
@@ -1378,53 +1397,95 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
         .then(reg => console.log('✓ PWA ready:', reg.scope))
-        .catch(() => {}); // Fail silently in non-prod
+        .catch(() => {});
     });
   }
 }
-
-/* INSTALL PROMPT — show a subtle "Add to Home Screen" banner */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  // Create install banner
-  const banner = document.createElement('div');
-  banner.id = 'pwa-banner';
-  banner.innerHTML = `
-    <div style="
-      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
-      background:#1C1A17; color:#F7F4EE; border:1px solid #B8963E;
-      border-radius:100px; padding:12px 22px; font-family:'DM Sans',sans-serif;
-      font-size:0.8rem; letter-spacing:0.06em; display:flex; align-items:center;
-      gap:14px; box-shadow:0 8px 32px rgba(0,0,0,0.35); z-index:9999;
-      animation:fadeUp 0.4s ease both;
-    ">
-      <span>📲 Add to your home screen</span>
-      <button id="pwa-install-btn" style="
-        background:#B8963E; color:#fff; border:none; border-radius:100px;
-        padding:6px 16px; font-size:0.75rem; letter-spacing:0.1em;
-        text-transform:uppercase; cursor:pointer; font-family:'DM Mono',monospace;
-      ">Install</button>
-      <button id="pwa-dismiss-btn" style="
-        background:transparent; color:#8A837A; border:none; cursor:pointer;
-        font-size:1rem; padding:0 4px;
-      ">✕</button>
-    </div>
-  `;
-  document.body.appendChild(banner);
-
-  document.getElementById('pwa-install-btn').addEventListener('click', () => {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { banner.remove(); deferredPrompt = null; });
-  });
-  document.getElementById('pwa-dismiss-btn').addEventListener('click', () => banner.remove());
-});
-
-window.addEventListener('appinstalled', () => {
-  console.log('Lamar Myers PWA installed!');
-});
 </script>
+
+<!-- PWA INSTALL BANNER — fully rebuilt, mobile-safe -->
+<script>
+(function () {
+  var deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Don't show if already dismissed this session
+    if (sessionStorage.getItem('pwa-dismissed')) return;
+
+    // Remove any stale banner
+    var old = document.getElementById('pwa-banner');
+    if (old) old.remove();
+
+    // Build the banner element
+    var banner = document.createElement('div');
+    banner.id = 'pwa-banner';
+
+    var inner = document.createElement('div');
+    inner.className = 'pwa-inner';
+
+    var icon = document.createElement('span');
+    icon.className = 'pwa-icon';
+    icon.textContent = '📲';
+
+    var text = document.createElement('span');
+    text.className = 'pwa-text';
+    text.textContent = 'Add to home screen';
+
+    var installBtn = document.createElement('button');
+    installBtn.className = 'pwa-install-btn';
+    installBtn.type = 'button';
+    installBtn.textContent = 'Install';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'pwa-close-btn';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Dismiss');
+    closeBtn.textContent = '✕';
+
+    // Assemble
+    inner.appendChild(icon);
+    inner.appendChild(text);
+    inner.appendChild(installBtn);
+    inner.appendChild(closeBtn);
+    banner.appendChild(inner);
+    document.body.appendChild(banner);
+
+    // Install handler
+    installBtn.addEventListener('click', function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function () {
+        removeBanner(banner);
+        deferredPrompt = null;
+      });
+    });
+
+    // Dismiss handler — animate out then remove
+    closeBtn.addEventListener('click', function () {
+      removeBanner(banner);
+      sessionStorage.setItem('pwa-dismissed', '1');
+    });
+  });
+
+  function removeBanner(banner) {
+    if (!banner || !banner.parentNode) return;
+    banner.classList.add('pwa-hiding');
+    // Remove after animation completes (280ms)
+    setTimeout(function () {
+      if (banner.parentNode) banner.parentNode.removeChild(banner);
+    }, 300);
+  }
+
+  window.addEventListener('appinstalled', function () {
+    var b = document.getElementById('pwa-banner');
+    if (b) b.parentNode && b.parentNode.removeChild(b);
+    console.log('Lamar Myers PWA installed!');
+  });
+}());
+</script>
+
 </body>
 </html>
